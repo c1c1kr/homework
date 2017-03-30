@@ -15,11 +15,11 @@ TARGET=libmyio.so.0
 .c.o:
 	$(CC) $(CFLAGS1) $(INCLUDE) $<
 
-all: $(TARGET) hardlink test 
+all: $(TARGET) link test  
 
 $(TARGET):$(OBJS)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS)
-hardlink:
+link:
 	ln -sf $(TARGET) $(TARGET:.so.0=.so)
 test: main.o $(TARGET)
 	$(CC) -o $@ main.o $(LIBS)
