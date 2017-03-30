@@ -1,13 +1,12 @@
 # Makefile sample
 
 CC=gcc
-AR=ar
 CFLAGS= -g $(INCLUDE) -fPIC
 CFLAGS1=-c -g 
 INCLUDE=-I../inc
 LIBS=-L./ -lmyio
 
-SRCS=read.c write.c
+SRCS=main.c read.c write.c
 OBJS=$(SRCS:.c=.o)
 
 TARGET=libmyio.so.0
@@ -16,14 +15,16 @@ TARGET=libmyio.so.0
 .c.o:
 	$(CC) $(CFLAGS1) $(INCLUDE) $<
 
-all: $(TARGET) test
+all: $(TARGET) hardlink test 
 
 $(TARGET):$(OBJS)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS)
+hardlink:
+	ln -sf $(TARGET) $(TARGET:.so.0=.so)
 test: main.o $(TARGET)
 	$(CC) -o $@ main.o $(LIBS)
 	@echo done
 dep:
 	gccmakedep $(INCLUDE) $(SRCS)
 clean:
-	rm -rf $(OBJS) $(TARGET) core
+	rm -rf $(OBJS) $(TARGET) $(TARGET:.so.0=.so) test core
